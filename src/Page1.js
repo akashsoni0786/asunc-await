@@ -2,16 +2,13 @@ import {
   Button,
   Card,
   Heading,
-  Layout,
   Page,
   Select,
   SkeletonBodyText,
-  SkeletonDisplayText,
-  SkeletonPage,
-  TextContainer,
+  Spinner,
   TextField,
 } from "@shopify/polaris";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 
 const Page1 = () => {
   const [selectcategory, setSelectedcategory] = useState([]);
@@ -22,7 +19,46 @@ const Page1 = () => {
   const [attributes, showAttributes] = useState(false);
   const [cat_subcat, showCat_subcat] = useState("");
   const [attrsOptions, setAttrsOptions] = useState([]);
-  const [attrboxs, setAttrboxs] = useState([]);
+  const [attrsOptions2, setAttrsOptions2] = useState([]);
+  const [attrsOptselected, setAttrsOptselected] = useState([]);
+  const [value, setValue] = useState("");
+  const [selected, setSelected] = useState("");
+  const [count, setCount] = useState([]);
+  const [addShow, setAddShow] = useState(false);
+  const [delload, setDelload] = useState(false);
+
+  const handleSelectFilter = (value, index) => {
+    setAddShow(true);
+    setSelected(value);
+    let temp = [...attrsOptselected];
+    temp[index] = value;
+    setAttrsOptselected(temp);
+    let temp2 = [...attrsOptions];
+    for (let i = 0; i < temp2.length; i++) {
+      if (temp.includes(temp2[i].value)) temp2[i].disabled = true;
+      else temp2[i].disabled = false;
+    }
+    setAttrsOptions2(temp2);
+  };
+  
+  const deleteit = (index) => {
+    setAddShow(true);
+    let temp = [...attrsOptselected];
+    let temp2 = [...count];
+    let temp5 = temp[index];
+    temp.splice(index, 1);
+    temp2.splice(index, 1);
+    setAttrsOptselected(temp);
+    setCount(temp2);
+    let temp4 = [...attrsOptions];
+    temp4.map((i, idx) => {
+      if (i.value === temp5) {
+        i.disabled = false;
+      }
+    });
+    setAttrsOptions2(temp4);
+  };
+
   React.useEffect(() => {
     showresult();
   }, []);
@@ -42,10 +78,14 @@ const Page1 = () => {
   };
 
   const showresult = async (pid) => {
+    if (count.length === attrsOptselected.length) {
+      setAddShow(true);
+    }
     setLoading(true);
     try {
       let data = {
         target_marketplace: "eyJtYXJrZXRwbGFjZSI6ImFsbCIsInNob3BfaWQiOm51bGx9",
+        user_id: "63329d7f0451c074aa0e15a8",
         selected: pid,
         target: {
           marketplace: "amazon",
@@ -62,7 +102,7 @@ const Page1 = () => {
           Accept: "application/json",
           "Content-Type": "application/json",
           appTag: "amazon_sales_channel",
-          Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoiNjMzMjlkN2YwNDUxYzA3NGFhMGUxNWE4Iiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNjY0OTg4NjM3LCJpc3MiOiJodHRwczpcL1wvYXBwcy5jZWRjb21tZXJjZS5jb20iLCJ0b2tlbl9pZCI6IjYzM2Q3ZDlkYjgyM2I5MTVhMzc0NTA3NSJ9.eZKlcA00P9R_hw-ThPqMP1G_ntdht2hoh2Sx9FhfFXsw1725An17BDLLEA5GYGEXr-vtrUMoWq2E7_sRAkFvvbBrEljQenYRUH0VxIdgFvUk3ptoh9_x63ZhOpS2LhW0v5G16fZiY4StoArQZ3TVRrzqf9b5ZGVrlxh7RjR6oZEzLg6UHqPdYXn5o1J0FdoyCndaDo8y3XwNBPUJU1BqnVMxeYYFnYlxWCpH1jq8IjSrP1YSQARMZhAfqrxuN73utQMwf5EYR4_2fM8Iz-LiwN7wVkRkoj7hDTeQtVx_736tycu6f4lLf03CZ0mxzrbAXuifl3eJsHKso0lgL4UxPg`,
+          Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoiNjI5MGRiYjIzOGUyOWExYjIzMzYwY2E5Iiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjk2NTY4MDE3LCJpc3MiOiJodHRwczpcL1wvYXBwcy5jZWRjb21tZXJjZS5jb20iLCJ0b2tlbl9pZCI6IjYzM2U1ZjUxYWRkZGFlMjIyNjczN2E5MiJ9.m5LW1XQ_w6E8Y_ZAWV-SqoqLUpgyeQXe3R7aGKhCfkxA0h0i2oESFxS3NXvsqU2zBWO9iPa5vobjXypZCEo7ZbjieaowfryVym-Yc2Kc-SkfHJfr7a2QrXxfKql0nBX0SvgEfVdWKxmVb3AK7MyT60gVUCCh82H7ExXntXA46oTvIQkK2rMTC1pCAFxFcWPTUEvz2yfuyLf62533dDfbdWwnYBxOYXrTUBN9E6aOsbl8MDfglV7bRIiKCXF1hTRjyOzUzqp_Tns4kg3oT2zXKpv7mLFcPpEPnYveRP4TGi_N5gRjfyA4o7xAxTHIxmhlRrY7ZEFUx-BcW6aZz7tYNw`,
           "Ced-Source-Id": 500,
           "Ced-Source-Name": "shopify",
           "Ced-Target-Id": 530,
@@ -74,7 +114,6 @@ const Page1 = () => {
       let result = await response.json();
       setAllResult([...allResult, result]);
       setAllData([...result.data, allData]);
-      console.log(result.data);
       let optns = [
         {
           label: "---select here---",
@@ -106,6 +145,7 @@ const Page1 = () => {
     try {
       let payload = {
         target_marketplace: "eyJtYXJrZXRwbGFjZSI6ImFsbCIsInNob3BfaWQiOm51bGx9",
+        user_id: "63329d7f0451c074aa0e15a8",
         target: {
           marketplace: "amazon",
           shopId: 530,
@@ -132,7 +172,7 @@ const Page1 = () => {
           Accept: "application/json",
           "Content-Type": "application/json",
           appTag: "amazon_sales_channel",
-          Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoiNjMzMjlkN2YwNDUxYzA3NGFhMGUxNWE4Iiwicm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNjY0OTg4NjM3LCJpc3MiOiJodHRwczpcL1wvYXBwcy5jZWRjb21tZXJjZS5jb20iLCJ0b2tlbl9pZCI6IjYzM2Q3ZDlkYjgyM2I5MTVhMzc0NTA3NSJ9.eZKlcA00P9R_hw-ThPqMP1G_ntdht2hoh2Sx9FhfFXsw1725An17BDLLEA5GYGEXr-vtrUMoWq2E7_sRAkFvvbBrEljQenYRUH0VxIdgFvUk3ptoh9_x63ZhOpS2LhW0v5G16fZiY4StoArQZ3TVRrzqf9b5ZGVrlxh7RjR6oZEzLg6UHqPdYXn5o1J0FdoyCndaDo8y3XwNBPUJU1BqnVMxeYYFnYlxWCpH1jq8IjSrP1YSQARMZhAfqrxuN73utQMwf5EYR4_2fM8Iz-LiwN7wVkRkoj7hDTeQtVx_736tycu6f4lLf03CZ0mxzrbAXuifl3eJsHKso0lgL4UxPg`,
+          Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoiNjI5MGRiYjIzOGUyOWExYjIzMzYwY2E5Iiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjk2NTY4MDE3LCJpc3MiOiJodHRwczpcL1wvYXBwcy5jZWRjb21tZXJjZS5jb20iLCJ0b2tlbl9pZCI6IjYzM2U1ZjUxYWRkZGFlMjIyNjczN2E5MiJ9.m5LW1XQ_w6E8Y_ZAWV-SqoqLUpgyeQXe3R7aGKhCfkxA0h0i2oESFxS3NXvsqU2zBWO9iPa5vobjXypZCEo7ZbjieaowfryVym-Yc2Kc-SkfHJfr7a2QrXxfKql0nBX0SvgEfVdWKxmVb3AK7MyT60gVUCCh82H7ExXntXA46oTvIQkK2rMTC1pCAFxFcWPTUEvz2yfuyLf62533dDfbdWwnYBxOYXrTUBN9E6aOsbl8MDfglV7bRIiKCXF1hTRjyOzUzqp_Tns4kg3oT2zXKpv7mLFcPpEPnYveRP4TGi_N5gRjfyA4o7xAxTHIxmhlRrY7ZEFUx-BcW6aZz7tYNw`,
           "Ced-Source-Id": 500,
           "Ced-Source-Name": "shopify",
           "Ced-Target-Id": 530,
@@ -144,10 +184,20 @@ const Page1 = () => {
       let result = await response.json();
       console.log(result);
       let attrs = [];
-      let attrs_filtered = [];
+      let attrs_filtered = [
+        {
+          label: "---select here---",
+          value: "---select here---",
+          disabled: false,
+        },
+      ];
       for (let i in result.data) {
         for (let a in result.data[i]) {
-          attrs.push({ label: result.data[i][a]["label"], value: a });
+          attrs.push({
+            label: result.data[i][a]["label"],
+            value: a,
+            disabled: false,
+          });
         }
       }
 
@@ -158,7 +208,7 @@ const Page1 = () => {
       });
 
       setAttrsOptions(attrs_filtered);
-      console.log(attrs_filtered);
+      setAttrsOptions2(attrs_filtered);
 
       setLoading(false);
     } catch (e) {
@@ -167,26 +217,10 @@ const Page1 = () => {
   };
 
   const addattributebox = () => {
-    setAttrboxs([
-      ...attrboxs,
-      <Card sectioned>
-        <span className="delbtn">
-        <Button destructive>Delete</Button>
-        </span>
-        <Select
-          options={attrsOptions}
-          // onChange={handleSelectChange}
-          // value={selected}
-        />
-        &nbsp;
-        <TextField
-      // value={value}
-      // onChange={handleChange}
-      autoComplete="off"
-    />
-      </Card>,
-    ]);
+    setAddShow(false);
+    setCount([...count, 1]);
   };
+
   return (
     <Page fullWidth>
       <Card sectioned>
@@ -204,31 +238,69 @@ const Page1 = () => {
           );
         })}
       </Card>
-
-      {attributes && (
+      {!loading && (
         <>
-          <Card sectioned>
-            <Heading>Attributes</Heading>
-            <Button primary onClick={addattributebox}>
-              Add Attribute
-            </Button>
-          </Card>
-
-          {attrboxs.map((i) => {
-            return i;
-          })}
+          {attributes && (
+            <>
+              <Card sectioned>
+                <Heading>Attributes</Heading>
+                {addShow ? (
+                  <Button primary onClick={addattributebox}>
+                    Add Attribute
+                  </Button>
+                ) : (
+                  <Button primary disabled>
+                    Add Attribute
+                  </Button>
+                )}
+              </Card>
+              {delload && (
+                <Spinner accessibilityLabel="Spinner example" size="large" />
+              )}
+              {!delload && (
+                <>
+                  {count.map((i, index) => {
+                    return (
+                      <Card sectioned>
+                        <span className="delbtn">
+                          <Button
+                            destructive
+                            onClick={() => {
+                              deleteit(index);
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        </span>
+                        <Select
+                          options={attrsOptions2}
+                          onChange={(e) => {
+                            handleSelectFilter(e, index);
+                          }}
+                          value={attrsOptselected[index]}
+                        />
+                        &nbsp;
+                        <TextField
+                          value={value}
+                          onChange={(e) => {
+                            setValue(e);
+                          }}
+                          autoComplete="off"
+                        />
+                      </Card>
+                    );
+                  })}
+                </>
+              )}
+            </>
+          )}
         </>
       )}
+
       {loading && (
-        <SkeletonPage primaryAction>
-          <Layout>
-            <Layout.Section>
-              <Card sectioned>
-                <SkeletonBodyText />
-              </Card>
-            </Layout.Section>
-          </Layout>
-        </SkeletonPage>
+        <Card sectioned>
+          <SkeletonBodyText />
+        </Card>
       )}
     </Page>
   );
