@@ -40,7 +40,7 @@ const Page1 = () => {
     }
     setAttrsOptions2(temp2);
   };
-  
+
   const deleteit = (index) => {
     setAddShow(true);
     let temp = [...attrsOptselected];
@@ -242,21 +242,6 @@ const Page1 = () => {
         <>
           {attributes && (
             <>
-              <Card sectioned>
-                <Heading>Attributes</Heading>
-                {addShow ? (
-                  <Button primary onClick={addattributebox}>
-                    Add Attribute
-                  </Button>
-                ) : (
-                  <Button primary disabled>
-                    Add Attribute
-                  </Button>
-                )}
-              </Card>
-              {delload && (
-                <Spinner accessibilityLabel="Spinner example" size="large" />
-              )}
               {!delload && (
                 <>
                   {count.map((i, index) => {
@@ -291,6 +276,21 @@ const Page1 = () => {
                     );
                   })}
                 </>
+              )}
+              <Card sectioned>
+                <Heading>Attributes</Heading>
+                {addShow ? (
+                  <Button primary onClick={addattributebox}>
+                    Add Attribute
+                  </Button>
+                ) : (
+                  <Button primary disabled>
+                    Add Attribute
+                  </Button>
+                )}
+              </Card>
+              {delload && (
+                <Spinner accessibilityLabel="Spinner example" size="large" />
               )}
             </>
           )}
